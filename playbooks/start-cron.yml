@@ -1,0 +1,6 @@
+---
+
+- name: Stop cron daemon
+  ansible.builtin.service:
+    name: crond
+    state: started

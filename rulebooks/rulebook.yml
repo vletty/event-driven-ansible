@@ -1,0 +1,44 @@
+---
+
+- name: Listen for events on port 5000
+  hosts: localhost
+
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+
+  rules:
+
+    - name: Stop cron
+      condition: event.payload.message == "stop cron"
+
+      action:
+        run_job_template:
+          name: EDA stop cron
+          organization: Default
+
+    - name: Start cron
+      condition: event.payload.message == "start cron"
+
+      action:
+        run_job_template:
+          name: EDA start cron
+          organization: Default
+
+- name: Check web site
+  hosts: localhost
+
+  sources:
+    - ansible.eda.url_check:
+        urls:
+          - http://ec2-18-135-84-130.eu-west-2.compute.amazonaws.com
+        delay: 10
+
+  rules:
+    - name: Start web
+      condition: event.url_check.status == "down"
+      action:
+        run_job_template:
+          name: EDA httpd
+          organization: Default

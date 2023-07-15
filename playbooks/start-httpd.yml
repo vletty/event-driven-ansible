@@ -1,0 +1,12 @@
+---
+
+- name: Ensure httpd is installed
+  ansible.builtin.package:
+    name: httpd
+    state: latest
+
+- name: Start httpd service
+  ansible.builtin.service:
+    name: httpd
+    state: started
+
